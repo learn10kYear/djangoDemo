@@ -1,0 +1,37 @@
+# /etc/apache2/sites-enabled/000-default.conf
+
+<VirtualHost *:80>
+
+	ServerName localhost
+	
+	# static file serving
+    Alias /static /django/demoSite/static
+    <Directory "/django/demoSite/static">
+        Require all granted
+    </Directory>
+
+	# media file serving
+    Alias /upload /django/demoSite/upload
+    <Directory "/django/demoSite/upload">
+        Require all granted
+    </Directory>
+	
+	WSGIDaemonProcess blogapp python-home=/django/env
+	
+	WSGIProcessGroup blogapp
+	WSGIApplicationGroup %{GLOBAL}
+
+	WSGIScriptAlias / /django/demoSite/demoSite/wsgi.py
+
+    # django app serving
+	<Directory "/django/demoSite">
+		Require all granted
+	</Directory>
+
+	LogLevel warn
+	
+    # log
+    ErrorLog  	${APACHE_LOG_DIR}/blogapp_error.log
+	CustomLog   ${APACHE_LOG_DIR}/blogapp_access.log combined
+
+</VirtualHost>
